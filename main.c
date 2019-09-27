@@ -1,11 +1,9 @@
 #include <GL/glut.h>
 #include <math.h>
 #include <stdlib.h>
-
 #include <unistd.h>
 #include <stdio.h>
 
-#define PI 3.141592
 #define QTD 3
 
 enum Func {Translate, Rotate, Scale, Todos};
@@ -17,7 +15,7 @@ void myTranslate(float x, float y, float z){
     glMultMatrixf(matrix);
 }
 void myRotate(float alpha, float x, float y, float z){
-    alpha *= PI/180.0;
+    alpha *= M_PI/180.0;
     float c = cos(alpha);
     float s = sin(alpha);
     // fonte da matriz: https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glRotate.xml
@@ -62,9 +60,9 @@ void cmp_history(GLfloat gl_history[QTD][16], GLfloat my_history[QTD][16], const
     int i, j;
     for (i = 0; i < QTD; i++) {
         for (j = 0; j < 16; j++) {
-            // if (gl_history[i][j] == -0) gl_history[i][j] = 0;
-            if (gl_history[i][j] != my_history[i][j]) {
-                printf("gl[%d][%d]: %f VS my[%d][%d]: %f\n", i, j, gl_history[i][j], i, j, my_history[i][j]);
+            // esse truque de arrendondamento é necessario pois comparações entre numeros de ponto flutuante me deixam triste.
+            if ((floorf((gl_history[i][j] - my_history[i][j]) * 1000000) / 1000000) != 0) {
+                printf("gl_history[%d][%d]: %f VS my_history[%d][%d]: %f\n", i, j, gl_history[i][j], i, j, my_history[i][j]);
                 printf("%s", msg_dif);
                 goto out;
             }
