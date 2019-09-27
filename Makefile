@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS= -g -Wall -Werror -lGL -lGLU -lglut
+CFLAGS= -g -Wall -lGL -lGLU -lglut -lm
 DEPS = # headers
 OBJ = main.o 
 
