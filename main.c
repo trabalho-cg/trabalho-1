@@ -190,7 +190,22 @@ int main(int argc, char ** argv)
  
     glutCreateWindow("Exemplo de Window/Viewport");
     init();
-    tipo = Rotate;
+    if (argc == 1) {
+        printf("Informe a operação desejada: (r)otate, (s)cale, (t)translate ou (a)ll\n");
+        exit(-1);
+    }
+    if (argv[1][0] == 'r') {
+        tipo = Rotate;
+    }
+    else if (argv[1][0] == 's') {
+        tipo = Scale;
+    }
+    else if (argv[1][0] == 't') {
+        tipo = Translate;
+    }
+    else if (argv[1][0] == 'a') {
+        tipo = Todos;
+    }
     glutDisplayFunc(displayFcn);
     glutMainLoop();
     return 0;
