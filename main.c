@@ -8,7 +8,8 @@
 #define PI 3.141592
 #define QTD 3
 
-enum Func {Translate, Rotate, Scale};
+enum Func {Translate, Rotate, Scale, Todos};
+enum Func tipo;
  
 void myTranslate(float x, float y, float z){
     GLfloat matrix[16] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1};
@@ -61,7 +62,6 @@ void desenha_linhas_1()
     glClear (GL_COLOR_BUFFER_BIT); //limpa a janela de visão (display window)
     glColor3f (0.0,0.0,1.0); //estalebece a cor de preenchimento inicial como azul
     glViewport(0,0,300,300); // Estabelece viewport esquerda
-/*Exibe segmento de reta*/
     glBegin (GL_LINES);
     glVertex2i (-10, -15);
     glVertex2i (20, 25);
@@ -87,23 +87,12 @@ void test_func(enum Func tipo, float x, float y, float z, float alpha)
 
     desenha_linhas_1();
     desenha_linhas_2();
-    glutSetWindowTitle("Cena inicial");
-    sleep(3);
+    sleep(5);
     glutSetWindowTitle("Comecando visualizacao openGL");
     // implementação do openGL
     glPushMatrix();
     for (i = 0; i < QTD; i++) {
-    //     glClear (GL_COLOR_BUFFER_BIT); //limpa a janela de visão (display window)
-    //     glColor3f (0.0,0.0,1.0); //estalebece a cor de preenchimento inicial como azul
-    //     glViewport(0,0,300,300); // Estabelece viewport esquerda
-    // /*Exibe segmento de reta*/
-    //     glBegin (GL_LINES);
-    //     glVertex2i (-10, -15);
-    //     glVertex2i (20, 25);
-    //     glEnd ();
-
         desenha_linhas_1();
-
         if (tipo == Rotate) {
             glRotatef(alpha,x,y,z);
         }
@@ -114,13 +103,6 @@ void test_func(enum Func tipo, float x, float y, float z, float alpha)
             glScalef(x, y, z);
         }
         glGetFloatv (GL_MODELVIEW_MATRIX, gl_history[i]);
-        // glColor3f (1.0,0.0,0.0); //estalebece a cor de preenchimento como vermelho
-        // glViewport(300,0,300,300); // Estabelece viewport esquerda
-        // glBegin (GL_LINES);
-        // glVertex2i (-10, -15);
-        // glVertex2i (20, 25);
-        // glEnd ();
-        // glFlush();
         desenha_linhas_2();
         sleep(1);
     }
@@ -132,12 +114,11 @@ void test_func(enum Func tipo, float x, float y, float z, float alpha)
     glutSetWindowTitle("Cena reinicializada");
     sleep(3);
     glutSetWindowTitle("Comecando visualizacao da nossa implementacao");
-    // nossa implementação
+    
     glPushMatrix();
+    // nossa implementação
     for (i = 0; i < QTD; i++) {
         desenha_linhas_1();
-    /*Roda segmento de reta para ser visto na outra viewport*/
-
         if (tipo == Rotate) {
             myRotate(alpha,x,y,z);
         }
@@ -152,6 +133,7 @@ void test_func(enum Func tipo, float x, float y, float z, float alpha)
         sleep(1);
     }
     glutSetWindowTitle("Terminou visualizacao da nossa implementacao");
+    sleep(3);
     glPopMatrix();
 
     if (tipo == Rotate) {
@@ -167,16 +149,19 @@ void test_func(enum Func tipo, float x, float y, float z, float alpha)
 
 void displayFcn (void)
 {
-    /* Função de scale: 100% */
-    // glScalef(1.1,1.1, 1);
-    // myScale(1.1, 1.1, 1);
-
-    /* Função de translate: 100% */
-    // glTranslatef(5, 0, 0);
-    // myTranslate(5, 5, 0);
-    // test_func(Rotate, 0.0, 0.0, 1.0, 90.0);
-    test_func(Rotate, 1.0, 0.0, 1.0, 90.0);
-
+    if (tipo == Scale || tipo == Todos) {
+        glutSetWindowTitle("Cena inicial (testando escala)");
+        test_func(Scale, 1.5, 1.5, 1.5, 90.0);
+    }
+    if (tipo == Translate || tipo == Todos) {
+        glutSetWindowTitle("Cena inicial (testando translacao)");
+        test_func(Translate, 19, 10, 0, 90.0);
+    }
+    if (tipo == Rotate || tipo == Todos) {
+        glutSetWindowTitle("Cena inicial (testando rotacao)");
+        test_func(Rotate, 0, 0, 1.0, 90.0);
+    }
+    exit(0);
 }
  
 int main(int argc, char ** argv)
@@ -188,6 +173,7 @@ int main(int argc, char ** argv)
  
     glutCreateWindow("Exemplo de Window/Viewport");
     init();
+    tipo = Rotate;
     glutDisplayFunc(displayFcn);
     glutMainLoop();
     return 0;
