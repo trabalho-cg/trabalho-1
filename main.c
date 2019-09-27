@@ -12,31 +12,48 @@ enum Func {Translate, Rotate, Scale, Todos};
 enum Func tipo;
  
 void myTranslate(float x, float y, float z){
+    // fonte da matriz: https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glTranslate.xml
     GLfloat matrix[16] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1};
     glMultMatrixf(matrix);
 }
 void myRotate(float alpha, float x, float y, float z){
     alpha *= PI/180.0;
-    GLfloat matrixX[16] = {1, 0, 0, 0, 0, cos(alpha), sin(alpha), 0, 0, -sin(alpha), cos(alpha), 0, 0, 0, 0, 1};
-    GLfloat matrixY[16] = {cos(alpha), 0, -sin(alpha), 0, 0, 1, 0, 0, sin(alpha), 0, cos(alpha), 0, 0, 0, 0, 1};
-    GLfloat matrixZ[16] = {cos(alpha), sin(alpha), 0, 0, -sin(alpha), cos(alpha), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
-   
-    glMultMatrixf(matrixX);
-    glMultMatrixf(matrixY);
-    glMultMatrixf(matrixZ);
+    float c = cos(alpha);
+    float s = sin(alpha);
+    // fonte da matriz: https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glRotate.xml
+    GLfloat matriz[16] = {
+        (x * x * (1 - c)) + c,
+        (y * x * (1 - c)) + z * s,
+        (x * z * (1 - c)) - y * s,
+        0,
+        (x * y * (1 - c)) - z * s,
+        (y * y * (1 - c)) + c,
+        (y * z * (1 -c)) + x * s,
+        0,
+        (x * z * (1 - c)) + y * s,
+        (y * z * (1 - c)) - x * s,
+        (z * z * (1 - c)) + c,
+        0,
+        0,
+        0,
+        0,
+        1
+     };
+     glMultMatrixf(matriz);
 }
 void myScale(float x, float y, float z){
+    // fonte da matriz: https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glScale.xml
     GLfloat matriz[16] = {x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1};
     glMultMatrixf(matriz);
 }
 void init (void)
 {
-/* determina cor da janela de branca*/
+    /* determina cor da janela de branca*/
     glClearColor (1.0,1.0,1.0,0.0);
-/* Estabelece parâmetros das coordenadas do mundo para a janela de clipping*/
+    /* Estabelece parâmetros das coordenadas do mundo para a janela de clipping*/
     glMatrixMode (GL_PROJECTION);
     gluOrtho2D (-100.0,100.0, -100.0, 100.0);
-/*Construcao da matrix de transformacao geométrica*/
+    /*Construcao da matrix de transformacao geométrica*/
     glMatrixMode(GL_MODELVIEW);
 }
 
